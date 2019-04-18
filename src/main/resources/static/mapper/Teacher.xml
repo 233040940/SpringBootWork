@@ -1,0 +1,30 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.springboot.mapper.TeacherMapper">
+    <insert id="insert" parameterType="com.example.springboot.pojo.Teacher"  >
+
+     INSERT  INTO t_teachers(id,teacher_name,user_id) VALUES (#{id},#{name},#{userId});
+
+    </insert>
+
+
+    <select id="findTeachersByUserID" parameterType="int" resultMap="findUser">
+
+        SELECT a.id,a.username,b.id AS tid,b.teacher_name,b.user_id FROM t_users a,t_teachers b WHERE a.id=b.user_id AND b.user_id=#{uid}
+
+    </select>
+
+    <resultMap id="findUser" type="com.example.springboot.pojo.Teacher">
+       <id column="tid" property="id"/>
+        <result column="teacher_name" property="name"/>
+        <result column="user_id" property="userId"/>
+        <association property="user" javaType="com.example.springboot.pojo.User">
+            <id column="id" property="id"/>
+            <result property="userName" column="username"/>
+
+        </association>
+    </resultMap>
+
+</mapper>
