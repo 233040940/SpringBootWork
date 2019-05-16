@@ -3,7 +3,7 @@
         "-//mybatis.org//DTD com.example.Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.springboot.mapper.TeacherMapper">
-    <insert id="insert" parameterType="com.example.springboot.pojo.Teacher"  >
+    <insert id="insertTeacher" parameterType="teacher"  >
 
      INSERT  INTO t_teachers(id,teacher_name,user_id) VALUES (#{id},#{name},#{userId});
 
@@ -16,14 +16,13 @@
 
     </select>
 
-    <resultMap id="findUser" type="com.example.springboot.pojo.Teacher">
+    <resultMap id="findUser" type="teacher">
        <id column="tid" property="id"/>
         <result column="teacher_name" property="name"/>
         <result column="user_id" property="userId"/>
-        <association property="user" javaType="com.example.springboot.pojo.User">
+        <association property="user" javaType="user">
             <id column="id" property="id"/>
             <result property="userName" column="username"/>
-
         </association>
     </resultMap>
 

@@ -1,5 +1,11 @@
 package com.example.springboot.repository;
 
+import com.google.common.collect.Sets;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
+
 import java.util.Collection;
 import java.util.Date;
 import java.util.Set;
@@ -8,31 +14,53 @@ import java.util.concurrent.TimeUnit;
 /**
  * @author yc
  * @version 1.0
- * @project redis 仓储接口
- * @description TODO
- * @date 2019-04-13 21:07
+ * @project springboot
+ * @description redis仓库
+ * @date 2019-04-13 21:48
  */
-public interface RedisRepository {
 
-    boolean isExist(String key);            //验证是否存在key
+@Component
+public class RedisRepository {
 
-    long countExist(Collection<String> keys);     //通过给定的key集合，验证存在几个key
+    @Autowired
+    @Qualifier("stringRedisTemplate")
+    private RedisTemplate redisTemplate;
 
-    boolean expire(String key, long timeout, TimeUnit unit);      //通过给定的过期时间TimeUnit设置key过期
+    public boolean isExist(String key) {
+        return redisTemplate.hasKey(key);
+    }
 
-    boolean expireAt(String key, Date date);         //通过给定的日期 date 设置key过期
+    public long countExist(Collection<String> keys) {
+        return redisTemplate.countExistingKeys(keys);
+    }
 
-    long getExpire(String key, TimeUnit timeUnit);          //通过指定的key 获取过期时间
+    public boolean expire(String key, long timeout, TimeUnit unit) {
+        return redisTemplate.expire(key,timeout,unit);
+    }
 
-    Set<String> getKeys(String pattern);            //通过指定的表达式 获取keys
+    public boolean expireAt(String key, Date date) {
+        return redisTemplate.expireAt(key,date);
+    }
 
-    void reKeyName(String oldKey, String newKey);       //将旧的key设置为新key
+    public long getExpire(String key, TimeUnit timeUnit) {
+        return redisTemplate.getExpire(key,timeUnit);
+    }
 
-    boolean reKeyNameIfAbsent(String oldKey, String newKey);      //仅当newKey不存在时，将oldKey设置为newKey
+    public Set<String> getKeys(String pattern) {
+        return redisTemplate.keys(pattern);
+    }
 
-    boolean deleteExpire(String key);            //通过指定的key移除过期时间
+    public void reKeyName(String oldKey, String newKey) {
+        redisTemplate.rename(oldKey,newKey);
+    }
 
-    long deleteKeys(String... keys);         //删除指定的key
+    public boolean reKeyNameIfAbsent(String oldKey, String newKey) { return redisTemplate.renameIfAbsent(oldKey,newKey); }
 
+    public boolean removeExpire(String key) {
+        return redisTemplate.persist(key);
+    }
 
+    public long deleteKeys(String... keys) {
+        return redisTemplate.delete(Sets.newHashSet(keys));
+    }
 }

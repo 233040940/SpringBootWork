@@ -1,6 +1,9 @@
-﻿package com.example.springboot.config;
+package com.example.springboot.config;
 
+import ch.qos.logback.core.db.dialect.MySQLDialect;
 import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.SqlUtilConfig;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -10,9 +13,10 @@ import java.util.Properties;
  * @author yc
  * @version 1.0
  * @project springboot
- * @description pagehelper插件配置
- * @date 2019-04-16 19:04
+ * @description 配置mybatis pagehelper参数[也可在application.properties配置，通过@ConfigurationProperties 引入]
+ * @date 2019-05-09 15:29
  */
+
 @Configuration
 public class PageHelperConfig {
 
@@ -20,14 +24,15 @@ public class PageHelperConfig {
     @Bean
     public PageHelper pageHelper() {
 
+        SqlUtilConfig sqlUtilConfig=new SqlUtilConfig();
+        sqlUtilConfig.setDialect("mysql");
+        sqlUtilConfig.setOffsetAsPageNum(true);
+        sqlUtilConfig.setReasonable(true);
+        sqlUtilConfig.setRowBoundsWithCount(true);
+        sqlUtilConfig.setSupportMethodsArguments(true);
         PageHelper pageHelper = new PageHelper();
-        Properties properties = new Properties();
-        properties.setProperty("offsetAsPageNum", "true");
-        properties.setProperty("rowBoundsWithCount", "true");
-        properties.setProperty("reasonable", "true");
-        properties.setProperty("dialect", "mysql");    //配置mysql数据库的方言
-        pageHelper.setProperties(properties);
-
+        pageHelper.setSqlUtilConfig(sqlUtilConfig);
         return pageHelper;
     }
+
 }

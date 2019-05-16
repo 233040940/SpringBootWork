@@ -1,49 +1,22 @@
 package com.example.springboot;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+import lombok.*;
+
 import java.io.Serializable;
 
+@Getter
+@Setter
+@ApiModel(value = "返回类型")
+@Builder
 public class ResponseResult<T> implements Serializable {
 
+    @ApiModelProperty(value = "响应代码（200表示成功,400表示客户端发生错误,500表示服务器出现未知错误）",dataType = "Integer")
     private Integer code;    //返回代码
+    @ApiModelProperty(value = "success 表示成功，fail表示失败",dataType = "String")
     private String message;   //返回信息
-    private  T t;            //详细数据
+    @ApiModelProperty(value = "详细数据或错误提示",dataType = "json格式字符串")
+    private  T data;            //详细数据
 
-    public ResponseResult(Integer code, String message, T t) {
-        this.code = code;
-        this.message = message;
-        this.t = t;
-    }
-
-    public Integer getCode() {
-        return code;
-    }
-
-    public void setCode(Integer code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getT() {
-        return t;
-    }
-
-    public void setT(T t) {
-        this.t = t;
-    }
-
-    @Override
-    public String toString() {
-        return "ResponseResult{" +
-                "code=" + code +
-                ", message='" + message + '\'' +
-                ", t=" + t +
-                '}';
-    }
 }
